@@ -1,7 +1,7 @@
 ﻿@model Vidly.ViewModels.AllCustomersViewModel
 
 @{
-    ViewBag.Title = "All";
+    ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -25,7 +25,7 @@ else
             {
                 <tr>
                     <td>
-                        @Html.ActionLink(customer.Name, "Detail", new { id = @customer.Id })
+                        @Html.ActionLink(customer.Name, "Edit", new { id = @customer.Id })
                     </td>
                     <td>
                         @customer.MembershipType.Name
