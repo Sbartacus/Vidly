@@ -21,14 +21,26 @@ namespace Vidly.Controllers
             var membershipTypes = _context.MembershipTypes.ToList();
             var viewModel = new CustomerFormViewModel()
             {
+                Customer = new Customer(),
                 MembershipTypes = membershipTypes
             };
             return View("CustomerFormView", viewModel);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Save(Customer customer)
         {
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new CustomerFormViewModel
+                {
+                    Customer = customer,
+                    MembershipTypes = _context.MembershipTypes.ToList()
+                };
+                return View("CustomerFormView", viewModel);
+            }
+
             if (customer.Id == 0)
             {
                 _context.Customers.Add(customer);
@@ -37,8 +49,8 @@ namespace Vidly.Controllers
             {
                 var customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
                 customerInDb.Name = customer.Name;
-                customerInDb.BirthDate = customerInDb.BirthDate;
-                customerInDb.MembershipTypeId = customerInDb.MembershipTypeId;
+                customerInDb.BirthDate = customer.BirthDate;
+                customerInDb.MembershipTypeId = customer.MembershipTypeId;
                 customerInDb.IsSubscribeToNewsletter = customer.IsSubscribeToNewsletter;
             }
             _context.SaveChanges();
@@ -49,12 +61,7 @@ namespace Vidly.Controllers
         // GET: Customers
         public ActionResult Index()
         {
-            var customers = _context
-                .Customers
-                .Include(c => c.MembershipType)
-                .ToList();
-            var allCustomersViewModel = new AllCustomersViewModel { Customers = customers };
-            return View(allCustomersViewModel);
+            return View();
         }
 
         public ActionResult Detail(int id)

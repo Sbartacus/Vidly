@@ -15,18 +15,22 @@ namespace Vidly.Models
         [StringLength(255)]
         public string Name { get; set; }
 
-        [Required]
         public Genre Genre { get; set; }
+
+        [Required]
         public byte GenreId { get; set; }
 
         [Required]
+        [Display(Name="Release Date")]
         public DateTimeOffset ReleaseDate { get; set; }
 
         [Required]
+        [Display(Name="Date Added")]
         public DateTimeOffset DateAdded { get; set; }
 
         [Required]
-        [Range(0, int.MaxValue)]
+        [Range(1, 20, ErrorMessage = "The number in stock must be between 1 and 20.")]
+        [Display(Name="Number in stock")]
         public int NumberInStock { get; set; }
     }
 }
