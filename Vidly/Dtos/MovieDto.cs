@@ -29,5 +29,7 @@ namespace Vidly.Dtos
         [Required]
         [Range(1, 20, ErrorMessage = "The number in stock must be between 1 and 20.")]
         public int NumberInStock { get; set; }
+
+        public byte NumberAvailable { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -17,15 +18,22 @@ namespace Vidly.Controllers.Api
         }
 
         //GET api/movies
-        [HttpGet]
-        public IHttpActionResult GetMovies()
+        public IEnumerable<MovieDto> GetMovies(string query = null)
         {
-            var movies = _context.Movies
+            var movieQuery = _context.Movies
                 .Include(m => m.Genre)
-                .ToList().Select(Mapper.Map<Movie, MovieDto>);
-            return Ok(movies);
-        }
+                .Where(m => m.NumberAvailable > 0);
 
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                movieQuery = movieQuery.Where(m => m.Name.Contains(query));
+            }
+
+            return movieQuery
+                .ToList()
+                .Select(Mapper.Map<Movie, MovieDto>);
+        }
+        
         //GET api/movies/1
         [HttpGet]
         public IHttpActionResult GetMovie(int id)
@@ -91,7 +99,6 @@ namespace Vidly.Controllers.Api
 
             return Ok();
         }
-
 
         private readonly ApplicationDbContext _context;
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Validation;
 using System.Linq;
 using System.Web.Mvc;
 using Vidly.Models;
@@ -24,9 +23,14 @@ namespace Vidly.Controllers
         //GET: Movies
         public ActionResult Index()
         {
-           return View();
+            if (User.IsInRole("CanManageMovies"))
+            {
+                return View("List");
+            }
+            return View("ReadOnlyList");
         }
 
+        [Authorize(Roles="CanManageMovies")]
         public ActionResult Edit(int id)
         {
             var movie = _context.Movies
@@ -110,6 +114,7 @@ namespace Vidly.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = RoleName.CanManageMovies)]
         public ActionResult New()
         {
             var genres = _context.Genres.ToList();
